@@ -1,0 +1,89 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+
+
+
+<div class="calculator">
+    <div class="input-group">
+        <label>عدد اول:</label>
+        <input class="input" @bind="FirstNumber" type="number" />
+    </div>
+
+    <div class="input-group">
+        <label>عدد دوم:</label>
+        <input class="input" @bind="SecondNumber" type="number" />
+    </div>
+
+    <div class="button-group">
+        <button class="button" @onclick="Add">+</button>
+        <button class="button" @onclick="Subtract">-</button>
+        <button class="button" @onclick="Multiply">*</button>
+        <button class="button" @onclick="Divide">/</button>
+    </div>
+
+    <div class="result @(IsResultVisible ? "" : "hidden")">
+        <h4>نتیجه: @Result</h4>
+    </div>
+
+    <div class="history">
+        <h4>تاریخچه:</h4>
+        <ul>
+            @foreach (var entry in History)
+            {
+                <li>@entry</li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    private double FirstNumber { get; set; }
+    private double SecondNumber { get; set; }
+    private double Result { get; set; }
+    private bool IsResultVisible { get; set; } = false;
+    private List<string> History { get; set; } = new List<string>();
+
+    private void Add()
+    {
+        Result = FirstNumber + SecondNumber;
+        UpdateHistory($"{FirstNumber} + {SecondNumber} = {Result}");
+    }
+
+    private void Subtract()
+    {
+        Result = FirstNumber - SecondNumber;
+        UpdateHistory($"{FirstNumber} - {SecondNumber} = {Result}");
+    }
+
+    private void Multiply()
+    {
+        Result = FirstNumber * SecondNumber;
+        UpdateHistory($"{FirstNumber} * {SecondNumber} = {Result}");
+    }
+
+    private void Divide()
+    {
+        if (SecondNumber != 0)
+        {
+            Result = FirstNumber / SecondNumber;
+            UpdateHistory($"{FirstNumber} / {SecondNumber} = {Result}");
+        }
+        else
+        {
+            Result = 0; // یا می‌توانید یک پیغام خطا نمایش دهید
+            UpdateHistory("خطا: تقسیم بر صفر");
+        }
+    }
+
+    private void UpdateHistory(string entry)
+    {
+        IsResultVisible = true;
+        History.Add(entry);
+        StateHasChanged();
+    }
+}
